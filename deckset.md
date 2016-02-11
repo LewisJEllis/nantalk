@@ -115,7 +115,7 @@ assert.equal(NaN, NaN);
 
 ---
 
-# "NaN" also stands for:
+# "NaN" actually stands for:
 # Not a NaN
 
 ---
@@ -282,7 +282,7 @@ How many NaNs are there, really?
 
 ---
 
-## ...that one NaN is unlikely to be equal to another NaN!
+## ...that one NaN is unlikely to be the same as another NaN!
 
 ---
 
