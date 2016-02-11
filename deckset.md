@@ -197,6 +197,22 @@ console.log(myIsNaN(NaN), isNaN(NaN),
 
 ---
 
+## Number.isNaN was added recently:
+```javascript
+console.log(Number.isNaN(NaN), isNaN(NaN),
+  Number.isNaN('hello'), isNaN('hello'),
+  Number.isNaN(['hello']), isNaN(['hello']),
+  Number.isNaN({}), isNaN({})
+);
+```
+...and it does what we want:
+
+```
+> true true false true false true false true
+```
+
+---
+
 ## But NaN isn't just a JavaScript thing...
 
 ---
