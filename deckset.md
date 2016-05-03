@@ -16,12 +16,11 @@ console.log(
   0 / 0,
   Infinity / Infinity,
   0 * Infinity,
-  Infinity - Infinity,
-  Math.pow(1, Infinity)
+  Infinity - Infinity
 );
 ```
 ```
-> NaN NaN NaN NaN NaN NaN
+> NaN NaN NaN NaN
 ```
 
 ---
@@ -46,7 +45,7 @@ console.log(
 console.log(
   parseInt('hello'), parseFloat('world'),
   Number(undefined), Number({}),
-  +{}, +undefined,
+  +undefined, +{},
   +new Date('hello')
 );
 ```
@@ -128,7 +127,7 @@ assert.equal(NaN, NaN);
 
 ---
 
-## Easy! Just use isNaN:
+## Easy! Just use the `isNaN` function:
 ```javascript
 console.log(isNaN(NaN));
 ```
@@ -140,13 +139,13 @@ console.log(isNaN(NaN));
 
 ## Or maybe not...
 ```javascript
-console.log(isNaN('hello'), isNaN(['hello']), isNaN({}));
+console.log(isNaN('foo'), isNaN(['bar']), isNaN({}));
 ```
 ```
 > true true true
 ```
 ```javascript
-console.log(typeof 'hello', typeof ['hello'], typeof {});
+console.log(typeof 'foo', typeof ['bar'], typeof {});
 ```
 ```
 > string object object
@@ -163,14 +162,12 @@ function myIsNaN(x) {
   return typeof x === 'number' && isNaN(x);
 }
 
-console.log(myIsNaN(NaN), isNaN(NaN),
-  myIsNaN('hello'), isNaN('hello'),
-  myIsNaN(['hello']), isNaN(['hello']),
-  myIsNaN({}), isNaN({})
-);
+console.log([NaN, 'foo', ['bar'], {}].map(isNaN));
+console.log([NaN, 'foo', ['bar'], {}].map(myIsNaN));
 ```
 ```
-> true true false true false true false true
+> true true true true
+> true false false false
 ```
 
 ---
@@ -181,23 +178,21 @@ function myIsNaN(x) {
   return x !== x;
 }
 
-console.log(myIsNaN(NaN), isNaN(NaN),
-  myIsNaN('hello'), isNaN('hello'),
-  myIsNaN(['hello']), isNaN(['hello']),
-  myIsNaN({}), isNaN({})
-);
+console.log([NaN, 'foo', ['bar'], {}].map(isNaN));
+console.log([NaN, 'foo', ['bar'], {}].map(myIsNaN));
 ```
 ```
-> true true false true false true false true
+> true true true true
+> true false false false
 ```
 
 ---
 
-## This works because NaN is the *only* non-reflexive value in JavaScript.
+## This works because `NaN` is the *only* value in JavaScript for which the equality operator is *non-reflexive*.
 
 ---
 
-## Number.isNaN was added recently:
+## Fortunately, Number.isNaN was added in ES2015:
 ```javascript
 console.log(Number.isNaN(NaN), isNaN(NaN),
   Number.isNaN('hello'), isNaN('hello'),
@@ -217,21 +212,200 @@ console.log(Number.isNaN(NaN), isNaN(NaN),
 
 ---
 
-## NaN is actually defined by the IEEE754 floating-point standard.
+## NaN is actually defined by the IEEE 754 floating-point standard.
+
+---
+
+## If you understand NaN in one language, you probably understand it in most.
+
+---
+
+## Fun fact about that...
+
+---
+
+## The IEEE 754 spec defines the `pow` function:
+```
+pow(0, 0) == 1
+pow(Infinity, 0) == 1
+pow(1, Infinity) == 1
+```
+This behavior is inherited from C99 and POSIX 2001.
+
+Most languages follow this.
+
+---
+
+# Most.
+
+---
+
+## Here's what Python does:
+```python
+[0 ** 0, float("inf") ** 0, 1 ** float("inf")]
+```
+```
+> [1 1.0 1.0]
+```
+
+---
+
+## And Ruby:
+```ruby
+[0 ** 0, Float::INFINITY ** 0, 1 ** Float::INFINITY]
+```
+```
+> [1 1.0 1.0]
+```
+
+---
+
+# But JavaScript?
+
+---
+
+```javascript
+Math.pow(0, 0);
+```
+
+---
+
+```javascript
+Math.pow(0, 0);
+```
+```
+> 1
+```
+
+---
+
+```javascript
+Math.pow(0, 0);
+```
+```
+> 1
+```
+```javascript
+Math.pow(Infinity, 0);
+```
+
+---
+
+```javascript
+Math.pow(0, 0);
+```
+```
+> 1
+```
+```javascript
+Math.pow(Infinity, 0);
+```
+```
+> 1
+```
+
+---
+
+```javascript
+Math.pow(0, 0);
+```
+```
+> 1
+```
+```javascript
+Math.pow(Infinity, 0);
+```
+```
+> 1
+```
+```javascript
+Math.pow(1, Infinity);
+```
+
+---
+
+```javascript
+Math.pow(0, 0);
+```
+```
+> 1
+```
+```javascript
+Math.pow(Infinity, 0);
+```
+```
+> 1
+```
+```javascript
+Math.pow(1, Infinity);
+```
+```
+> NaN
+```
+
+---
+
+![what](./what.jpg)
+
+---
+
+#[fit] Why?
+
+---
+
+![fit](es3.png)
+
+---
+
+![inline](12734.png)
+![inline](12734-bullet.png)
+
+---
+
+- ES`1` specifies `pow`: 1997
+- C99 specifies `pow`: 1999
+- POSIX specifies `pow`: 2001
+- IEEE 754 inherits `pow`: 2008
+
+---
+
+![fit](12734-note.png)
+
+---
+
+## So just like every other question about JavaScript, the answer is...
+
+---
+
+#[fit] Backwards
+#[fit] compatibility
+
+---
+
+## So anyway, what does IEEE 754 say about how we represent NaN?
 
 ---
 
 ## Bit representation of a float32 value:
 
 * 1-bit sign
-* 8-bit exponent
+* 8-bit exponent, offset by `127`
 * 23-bit significand
-
-```
-0 10000000 01000000000000000000000 -> 2.5
-```
+* `(-1) ^ s * 2 ^ (exp - 127) * 1.significand`
 
 Note: the significand is actually 24 bits, but only 23 are explicitly stored.
+
+---
+
+## Example float32 value:
+```
+0 10000000 01000000000000000000000
+```
+
+- `(-1) ^ 0 = 1`
+- `2 ^ (10000000b - 127) = 2`
+- `1.01b = 1.25`
+- `1 * 2 * 1.25 = 2.5`
 
 ---
 
@@ -243,6 +417,17 @@ Note: the significand is actually 24 bits, but only 23 are explicitly stored.
 ```
 
 NaN values have a maximized exponent and a nonzero significand.
+
+---
+
+## So these are also all NaN:
+```
+1 11111111 10000000000000000000000 -> NaN (quiet, negative)
+0 11111111 10000000000000000000001 -> NaN (quiet, but different)
+0 11111111 00000000000000000000001 -> NaN (signaling)
+0 11111111 00000000000000000000010 -> NaN (signaling, but different)
+0 11111111 00000000000000000000011 -> NaN (we can start counting!)
+```
 
 ---
 
