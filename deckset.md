@@ -1,4 +1,5 @@
-# NaN
+# Idiosyncrasies of NaN
+## @LewisJEllis
 
 ---
 
