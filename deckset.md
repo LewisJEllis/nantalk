@@ -123,7 +123,7 @@ assert.equal(NaN, NaN);
 
 ---
 
-## So how can we tell if something is NaN?
+## So we know where `NaN` appears, but how do we tell if something *is* `NaN`?
 
 ---
 
@@ -221,7 +221,7 @@ This uses the `SameValue` internal operation, which is (mostly) like how a `Set`
 
 ---
 
-## But NaN isn't just a JavaScript thing...
+## But NaN isn't just a JavaScript thing!
 
 ---
 
@@ -251,7 +251,7 @@ pow(anything, NaN) -> NaN
 If either input is `NaN`, or if the base is negative and the exponent is not an integer, the result is `NaN`.
 
 ---
-## Three indeterminate form `pow`s in IEEE 754:
+## Three indeterminate forms of `pow`:
 ```
 pow(0, 0) -> 1
 pow(Infinity, 0) -> 1
