@@ -84,7 +84,7 @@ console.log(typeof NaN);
 
 ---
 
-![what](./what.jpg)
+![what](./images/what.jpg)
 
 ---
 
@@ -99,7 +99,7 @@ console.log(NaN === NaN);
 
 ---
 
-![what](./what.jpg)
+![what](./images/what.jpg)
 
 ---
 
@@ -120,7 +120,7 @@ assert.equal(NaN, NaN);
 
 ---
 
-![100%](./ariya-tweet.png)
+![100%](./images/ariya-tweet.png)
 
 ---
 
@@ -153,7 +153,7 @@ console.log(typeof 'foo', typeof ['bar'], typeof {});
 ```
 ---
 
-![fit](./polarbearfacepalm.jpg)
+![fit](./images/polarbearfacepalm.jpg)
 
 ---
 
@@ -379,7 +379,7 @@ Math.pow(1, Infinity);
 
 ---
 
-![fit](./oddpenguinout.jpeg)
+![fit](./images/oddpenguinout.jpeg)
 
 ---
 
@@ -387,12 +387,12 @@ Math.pow(1, Infinity);
 
 ---
 
-![fit](es3.png)
+![fit](./images/es3.png)
 
 ---
 
-![inline](12734.png)
-![inline](12734-bullet.png)
+![inline](./images/12734.png)
+![inline](./imags/12734-bullet.png)
 
 ---
 
@@ -403,7 +403,7 @@ Math.pow(1, Infinity);
 
 ---
 
-![fit](12734-note.png)
+![fit](./images/12734-note.png)
 
 ---
 
