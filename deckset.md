@@ -123,7 +123,7 @@ assert.equal(NaN, NaN);
 
 ---
 
-## So how do we tell if something is NaN?
+## So how can we tell if something is NaN?
 
 ---
 
@@ -152,7 +152,7 @@ console.log(typeof 'foo', typeof ['bar'], typeof {});
 ```
 ---
 
-![what](./what.jpg)
+![fit](./polarbearfacepalm.jpg)
 
 ---
 
@@ -188,23 +188,36 @@ console.log([NaN, 'foo', ['bar'], {}].map(myIsNaN));
 
 ---
 
-## This works because `NaN` is the *only* value in JavaScript for which the equality operator is *non-reflexive*.
+## This works because `NaN` is the *only* value in JavaScript for which the equality operators are *non-reflexive*.
 
 ---
 
-## Fortunately, Number.isNaN was added in ES2015:
+## Fortunately, ES2015 adds `Number.isNaN`:
 ```javascript
-console.log(Number.isNaN(NaN), isNaN(NaN),
-  Number.isNaN('hello'), isNaN('hello'),
-  Number.isNaN(['hello']), isNaN(['hello']),
-  Number.isNaN({}), isNaN({})
-);
+console.log([NaN, 'foo', ['bar'], {}].map(isNaN));
+console.log([NaN, 'foo', ['bar'], {}].map(Number.isNaN));
+
 ```
 ...and it does what we want:
 
 ```
-> true true false true false true false true
+> true true true true
+> true false false false
 ```
+
+---
+
+## Or we can use `Object.is`:
+```javascript
+console.log([NaN, 'foo', ['bar'], {}].map(isNaN));
+console.log([NaN, 'foo', ['bar'], {}].map(n => Object.is(n, NaN)));
+```
+
+```
+> true true true true
+> true false false false
+```
+This uses the `SameValue` internal operation, which is (mostly) like how a `Set` distinguishes its elements.
 
 ---
 
@@ -216,7 +229,11 @@ console.log(Number.isNaN(NaN), isNaN(NaN),
 
 ---
 
-## If you understand NaN in one language, you probably understand it in most.
+## If you know where NaN appears and how it behaves in one language, that carries over to most others.
+
+---
+
+# Most.
 
 ---
 
@@ -226,17 +243,23 @@ console.log(Number.isNaN(NaN), isNaN(NaN),
 
 ## The IEEE 754 spec defines the `pow` function:
 ```
-pow(0, 0) == 1
-pow(Infinity, 0) == 1
-pow(1, Infinity) == 1
+pow(2, 3) -> 8
+pow(-1, 1.5) -> NaN
+pow(NaN, anything) -> NaN
+pow(anything, NaN) -> NaN
+```
+If either input is `NaN`, or if the base is negative and the exponent is not an integer, the result is `NaN`.
+
+---
+## Three indeterminate form `pow`s in IEEE 754:
+```
+pow(0, 0) -> 1
+pow(Infinity, 0) -> 1
+pow(1, Infinity) -> 1
 ```
 This behavior is inherited from C99 and POSIX 2001.
 
 Most languages follow this.
-
----
-
-# Most.
 
 ---
 
@@ -256,6 +279,16 @@ Most languages follow this.
 ```
 ```
 > [1 1.0 1.0]
+```
+
+---
+
+## And Lua:
+```lua
+print(math.pow(0, 0), math.pow(math.huge, 0), math.pow(1, math.huge))
+```
+```
+> 1 1 1
 ```
 
 ---
@@ -345,7 +378,7 @@ Math.pow(1, Infinity);
 
 ---
 
-![what](./what.jpg)
+![fit](./oddpenguinout.jpeg)
 
 ---
 
@@ -382,18 +415,18 @@ Math.pow(1, Infinity);
 
 ---
 
-## So anyway, what does IEEE 754 say about how we represent NaN?
+## So anyway, what does IEEE 754 say about how we *represent* NaN?
 
 ---
 
 ## Bit representation of a float32 value:
-
+```
+0 10000000 01000000000000000000000
+```
 * 1-bit sign
 * 8-bit exponent, offset by `127`
-* 23-bit significand
+* 23-bit significand (with implicit leading 24th bit)
 * `(-1) ^ s * 2 ^ (exp - 127) * 1.significand`
-
-Note: the significand is actually 24 bits, but only 23 are explicitly stored.
 
 ---
 
@@ -413,6 +446,13 @@ Note: the significand is actually 24 bits, but only 23 are explicitly stored.
 ```
 0 11111111 00000000000000000000000 -> Infinity
 1 11111111 00000000000000000000000 -> -Infinity
+```
+Infinity values have a maximized exponent and a zero significand.
+
+---
+
+## Bit representations of special values:
+```
 0 11111111 10000000000000000000000 -> NaN
 ```
 
@@ -444,7 +484,7 @@ How many NaNs are there, really?
 
 ---
 
-# 2^24 - 2 = *16777214*
+# 2^24 - 2 = *16,777,214*
 
 ---
 
@@ -453,7 +493,7 @@ How many NaNs are there, really?
 
 ---
 
-# 2^52 - 2 = *4503599627370494*
+# 2^52 - 2 = *4,503,599,627,370,494*
 
 ---
 
@@ -467,18 +507,21 @@ How many NaNs are there, really?
 
 ---
 
-## ...that one NaN is unlikely to be the same as another NaN!
+## ...that one random NaN is unlikely to be the same as another random NaN!
 
 ---
 
-# Thus, NaN !== NaN.
+# Thus, NaN !== NaN[^1].
+
+[^1]: With probability `1/4,503,599,627,370,494`.
 
 ---
 
 ## Some Related Links
-* http://ariya.ofilabs.com/2014/05/the-curious-case-of-javascript-nan.html
-* http://www.2ality.com/2012/02/nan-infinity.html
-* https://en.wikipedia.org/wiki/NaN
+* [http://ariya.ofilabs.com/2014/05/the-curious-case-of-javascript-nan.html](http://ariya.ofilabs.com/2014/05/the-curious-case-of-javascript-nan.html)
+* [http://www.2ality.com/2012/02/nan-infinity.html](http://www.2ality.com/2012/02/nan-infinity.html)
+* [https://en.wikipedia.org/wiki/NaN](https://en.wikipedia.org/wiki/NaN)
+* [https://tc39.github.io/ecma262/#sec-applying-the-exp-operator](https://tc39.github.io/ecma262/#sec-applying-the-exp-operator)
 
 ---
 
