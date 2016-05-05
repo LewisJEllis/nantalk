@@ -494,13 +494,13 @@ How many NaNs are there, really?
 
 ---
 
-# 2^52 - 2 = *4,503,599,627,370,494*
+# 2^53 - 2 = *9,007,199,254,740,990*
 
 ---
 
-## That's 4.5 * 10^15, or 4.5 quadrillion.
+## That's 9 * 10^15, or 9 quadrillion.
 
-## 4.5 petabytes is about 10,000 years worth of music.
+## 9 petabytes is about 20,000 years worth of music.
 
 ---
 
@@ -514,7 +514,7 @@ How many NaNs are there, really?
 
 # Thus, NaN !== NaN[^1].
 
-[^1]: With probability `1/4,503,599,627,370,494`.
+[^1]: With probability `1/9,007,199,254,740,990`.
 
 ---
 
